@@ -1,0 +1,4 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:checkable="true" android:visible="true" android:title="@string/mon_exit_srv" android:id="@+id/exit_srv"></item>
+</menu>
+    

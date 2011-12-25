@@ -3,5 +3,13 @@
 
     <string name="hello">Hello World, AirMobsActivity!</string>
     <string name="app_name">AirMobs</string>
+    <string name="notif_title">AirMobs Services</string>
+    <string name="mon_exit_srv">Exit Monitor</string>
+    <string name="allow_sms">Allow other Airmobs users use my Messaging(SMS) for credit</string>
+    <string name="allow_call">Allow other Airmobs users use my Call (Voice) minutes for credit</string>
+    <string name="rating">My Airmobs Rating</string>
+    <string name="battery">Allow other Airmobs users use my network until battery is less than</string>
+    <string name="credit_status_title">Credit Status:</string>
+    <string name="allow_inet">Allow other Airmobs users use my internet connection</string>
 
 </resources>
