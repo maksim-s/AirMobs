@@ -9,9 +9,10 @@ package edu.mit.media.airmobs;
 public class IntentManager {
 	/**
 	 * Airmobs specific intent handler and what is the Intent that it is interested in
-	 */
+	
 	void addIntentListener(AirmobsIntentHandler handler, Intent i);
 	void removeIntentListener(AirmobsIntentHandler handler, Intent i);
+	 */
 	//
 	
 }
