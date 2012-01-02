@@ -20,10 +20,9 @@ public class WifiNetworkManager {
 	private WifiManager wifiManager;
 
 	public WifiNetworkManager(Context c) {
-		// set the wifi parameters -> ipaddress,
 		wifiManager = (WifiManager) c.getSystemService(Context.WIFI_SERVICE);
 		status  = wifiManager.isWifiEnabled();
-		
+		// fill in the network params	
 	}
 	
 	
@@ -60,11 +59,21 @@ public class WifiNetworkManager {
 	
 	// create our own wifi network
 	public boolean create(String name) {
+		// turn on proxoid stuff
 		return true;
 	}
 	
-	// connect to a wifi network
-	public boolean connect(String name) {
+	// connect to an Airmobs wifi network
+	public boolean connect() {
+		// turn on transproxy and connect to proxoid of the server.
+		ArrayList<String> networkNames = this.search();
+		String name = null;
+		for (String n : networkNames) {
+			if (n.indexOf("Airmobs") > 0) {
+				name = n;
+				break;
+			}
+		}
 		WifiConfiguration conf = new WifiConfiguration();
 		conf.SSID = "\"" + name + "\"";
 		int netId = this.wifiManager.addNetwork(conf);
