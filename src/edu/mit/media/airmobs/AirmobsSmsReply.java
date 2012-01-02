@@ -8,6 +8,8 @@ import java.net.Socket;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 
+import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 /**
@@ -19,6 +21,7 @@ import android.util.Log;
  */
 public class AirmobsSmsReply extends Worker {
 	
+
 	public AirmobsSmsReply(Socket provider) {
 		s = provider;
 		try {
@@ -62,11 +65,11 @@ public class AirmobsSmsReply extends Worker {
 		String msgfrom = msg.getElementsByTagName("msgfrom").item(0).getTextContent();
 		String text = msg.getElementsByTagName("msgtext").item(0).getTextContent();
 		//TODO: content provider insert - or - send to myself  
-		getContentResolver().
+		//mContext.getContentResolver().insert(Uri.parse("content://sms/inbox));
 		
 	}
 	private Socket s;
 	private DataInputStream is;
 	private static final String LOG_TAG = "Airmobs::SmsRelayWorker"; 
-
+	private Context mContext;
 }
