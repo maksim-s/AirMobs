@@ -71,6 +71,14 @@
         android:layout_height="wrap_content"
         android:src="@drawable/sparator1" />
 
+    <AutoCompleteTextView
+        android:id="@+id/peerIP"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <requestFocus />
+    </AutoCompleteTextView>
+
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"

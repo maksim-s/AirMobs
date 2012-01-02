@@ -30,6 +30,8 @@ public class AirmobsSmsReply extends Worker {
 			mBoss.workerFinished(this, mState);
 		}
 	}
+	
+	public void setContext(Context ctx) { mContext = ctx; }
 	// worker thread loop method
 	@Override
 	void work() {
@@ -42,8 +44,6 @@ public class AirmobsSmsReply extends Worker {
 				Log.e(LOG_TAG,"error reading UTF string message from input stream");
 				mState = Worker.WORKER_STATE.FINISHED_ERROR;	
 				this.stopWorking();
-				// TODO: stop running after exception
-				// make sure a new worker relay gets a new socket 
 			}
 		}
 	}
@@ -62,6 +62,7 @@ public class AirmobsSmsReply extends Worker {
 		String msgfrom = msg.getElementsByTagName("msgfrom").item(0).getTextContent();
 		String text = msg.getElementsByTagName("msgtext").item(0).getTextContent();
 		//TODO: content provider insert - or - send to myself  
+		getContentResolver().
 		
 	}
 	private Socket s;

@@ -1,8 +1,12 @@
 package edu.mit.media.airmobs;
 
-interface MonitorApi {
+import edu.mit.media.airmobs.MonitorListener;
 
+interface MonitorApi {
+ 
 	int getStatus();
 	boolean exit();
-
+	void test(int test_case);
+	void addMonitorListener(MonitorListener handler);
+	void removeMonitorListener(MonitorListener handler);
 }

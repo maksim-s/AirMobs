@@ -1,4 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:checkable="true" android:visible="true" android:title="@string/mon_exit_srv" android:id="@+id/exit_srv"></item>
+    <item android:checkable="true" android:visible="true" android:title="@string/mon_test_1" android:id="@+id/tst1_srv"></item>
+    <item android:checkable="true" android:visible="true" android:title="@string/mon_test_2" android:id="@+id/tst2_srv"></item>
+    <item android:checkable="true" android:visible="true" android:title="@string/mon_test_3" android:id="@+id/tst3_srv"></item>
 </menu>
     

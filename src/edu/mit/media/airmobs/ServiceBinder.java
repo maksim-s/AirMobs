@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -56,7 +55,7 @@ public class ServiceBinder implements ServiceConnection {
 	 * @param app - the activity starting the service
 	 * @see android.app.Activity#bindService(Intent, ServiceConnection, int)
 	 */
-	public void bindToService(String serviceName, BoundCallback handler, Activity app) {
+	public void bindToService(String serviceName, BoundCallback handler, Context app) {
 		boolean bound = app.bindService(new Intent(serviceName),this,0);
 		if (bound){
 			mServicesBindMap.put(serviceName, new Boolean(bound));
@@ -74,7 +73,7 @@ public class ServiceBinder implements ServiceConnection {
 		}
 	}
 	
-	public void unbindToService(String serviceName, Activity app){
+	public void unbindToService(String serviceName, Context app){
 		if (isBound(serviceName)) {
 			app.unbindService(this);
 			mServicesBindMap.put(serviceName, new Boolean(false));
@@ -132,7 +131,7 @@ public class ServiceBinder implements ServiceConnection {
 	 * @param app - the activity that wishes to bind to the service used to access running services list
 	 * @return true if service was started already false if service is not running
 	 */
-	public boolean isServiceStarted(String serviceName, Activity app) {
+	public boolean isServiceStarted(String serviceName, Context app) {
 		boolean found = false;
 		ActivityManager mgr = (ActivityManager) app.getSystemService(Context.ACTIVITY_SERVICE);
 		List<ActivityManager.RunningServiceInfo> servicesInfo = mgr.getRunningServices(Integer.MAX_VALUE);

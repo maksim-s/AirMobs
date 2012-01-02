@@ -11,5 +11,8 @@
     <string name="battery">Allow other Airmobs users use my network until battery is less than</string>
     <string name="credit_status_title">Credit Status:</string>
     <string name="allow_inet">Allow other Airmobs users use my internet connection</string>
+    <string name="mon_test_1">Set Provider</string>
+    <string name="mon_test_2">Set Customer</string>
+    <string name="mon_test_3">Set Idle</string>
 
 </resources>

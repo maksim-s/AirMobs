@@ -1,7 +1,15 @@
 package edu.mit.media.airmobs;
 
 import java.nio.channels.ClosedByInterruptException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningTaskInfo;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
@@ -26,6 +34,7 @@ import android.util.Log;
 
 public class MonitorService extends ServiceAdapter {
 
+	public enum AirmobsRole { PROVIDER, CUSTOMER, IDLE }
 	/**
 	 * Implements the API class provisioning method required by the ServiceAdapter helper class
 	 * Api class is defined by the aidl interface MonitorApi
@@ -60,9 +69,12 @@ public class MonitorService extends ServiceAdapter {
 		Log.i(LOG_TAG,"created ...");
 		mMonitoring = new Thread(new Monitor());
 		service_running = true;
+		mState = AirmobsRole.IDLE;
 		mMonitoring.start();
 		counter = 0;
-		
+		mListeners = new ArrayList<MonitorListener>();
+		mServerLogic = new ServerLogic();
+		mListeners.add(mServerLogic);
 	}
 	/**
 	 * Called after service is destroyed by the ServiceAdapter helper class
@@ -91,6 +103,48 @@ public class MonitorService extends ServiceAdapter {
 			service_running = false;
 			return true;
 		}
+
+		@Override
+		public void test(int test_case) throws RemoteException {
+			// send event for all monitor listeners to set role as network provider
+			if (test_case == 1) {
+				Iterator<MonitorListener> it = mListeners.iterator();
+				while (it.hasNext()){
+					it.next().monitorRoleProvider();
+					mState = AirmobsRole.PROVIDER;
+				}
+			}
+			// send event for all monitor listeners to set role as network customer
+			if (test_case == 2) {
+				Iterator<MonitorListener> it = mListeners.iterator();
+				while (it.hasNext()){
+					it.next().monitorRoleCustomer();
+					mState = AirmobsRole.CUSTOMER;
+				}
+			}
+			// send event for all monitor listeners to set role as network customer
+			if (test_case == 3) {
+				Iterator<MonitorListener> it = mListeners.iterator();
+				while (it.hasNext()){
+					it.next().monitorRoleIdle();
+					mState = AirmobsRole.IDLE;
+				}
+			}
+		}
+
+		@Override
+		public void addMonitorListener(MonitorListener handler)
+				throws RemoteException {
+			if (!mListeners.contains(handler))
+				mListeners.add(handler);	
+		}
+
+		@Override
+		public void removeMonitorListener(MonitorListener handler)
+				throws RemoteException {
+			if (mListeners.contains(handler))
+				mListeners.remove(handler);	
+			}
 	};
 	/**
 	 * The internal Monitor class implemented as a thread
@@ -103,9 +157,20 @@ public class MonitorService extends ServiceAdapter {
 		public void run() {
 			try {
 				while (service_running){
-					Thread.sleep(100);
+					Thread.sleep(1000);
 					counter++;
-					Log.i(LOG_TAG,"monitor hitting "+Integer.toString(counter));
+					Log.i(LOG_TAG,"monitor hitting "+Integer.toString(counter));					
+					// understanding my role
+					// notifying my listeners on the role decided  --> simulated by api.test(int)
+					//
+					if (mState == AirmobsRole.CUSTOMER){
+						if (isMessagingActivated()) {
+							Log.i(LOG_TAG, "detected messaging app activated --> starting AirmobsSmsSender");
+							Intent msgui = new Intent(MonitorService.this,AirmobsSmsSender.class);
+						    msgui.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+							MonitorService.this.startActivity(msgui);
+						}
+					}
 				}				
 			}
 			catch (Exception e){
@@ -118,9 +183,30 @@ public class MonitorService extends ServiceAdapter {
 		
 	}
 	
+	/**
+	 * monitors whether user has activated messaging - hijack ui
+	 */
+	private boolean isMessagingActivated(){
+		boolean messaging_activated = false;
+		ActivityManager am = (ActivityManager) MonitorService.this.getSystemService(Context.ACTIVITY_SERVICE);
+        List<RunningTaskInfo> tasks = am.getRunningTasks(1);
+        if (!tasks.isEmpty()) {
+            ComponentName topActivity = tasks.get(0).topActivity;
+            if (topActivity.getClassName().contains("com.android.mms.ui")) {
+                messaging_activated = true;
+            }
+        }
+        
+        return messaging_activated;
+	}
+	
+	
 	private int counter;
 	private boolean service_running;
 	private Thread mMonitoring;
+	private MonitorService.AirmobsRole mState;
 	private static final String LOG_TAG = "Airmobs::MonitorService";
+	private ArrayList<MonitorListener> mListeners;
+	private ServerLogic mServerLogic;;
 
 }
