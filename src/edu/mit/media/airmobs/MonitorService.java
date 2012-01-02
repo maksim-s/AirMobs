@@ -75,6 +75,8 @@ public class MonitorService extends ServiceAdapter {
 		mListeners = new ArrayList<MonitorListener>();
 		mServerLogic = new ServerLogic();
 		mListeners.add(mServerLogic);
+		wifiManager = new WifiNetworkManager(this);
+		operatorNetManager = new OperatorNetworkManager(this);
 	}
 	/**
 	 * Called after service is destroyed by the ServiceAdapter helper class
@@ -152,7 +154,7 @@ public class MonitorService extends ServiceAdapter {
 	 *
 	 */
 	private class Monitor implements Runnable {
-
+		
 		@Override
 		public void run() {
 			try {
@@ -162,8 +164,36 @@ public class MonitorService extends ServiceAdapter {
 					Log.i(LOG_TAG,"monitor hitting "+Integer.toString(counter));					
 					// understanding my role
 					// notifying my listeners on the role decided  --> simulated by api.test(int)
-					//
-					if (mState == AirmobsRole.CUSTOMER){
+					if (!operatorNetManager.getStatus()) { 
+						// if the 3G connection is off then setCustomer
+						Log.i(LOG_TAG, "Identified the state as Customer");
+						Iterator<MonitorListener> it = mListeners.iterator();
+						while (it.hasNext()) {
+							it.next().monitorRoleCustomer();
+							mState = AirmobsRole.CUSTOMER;
+						}
+					} else if (operatorNetManager.getStatus() &&
+							   wifiManager.getStatus() &&
+							  !wifiManager.isConnected()){
+						// if 3G is on and wifi is on, but not connected to anything
+						Log.i(LOG_TAG, "Identified the state as Provider");
+						Iterator<MonitorListener> it = mListeners.iterator();
+						while (it.hasNext()){
+							it.next().monitorRoleProvider();
+							mState = AirmobsRole.PROVIDER;
+						}
+					} else {
+						// else setIdle
+						Log.i(LOG_TAG, "Identified the state as Idle");
+						Iterator<MonitorListener> it = mListeners.iterator();
+						while (it.hasNext()){
+							it.next().monitorRoleIdle();
+							mState = AirmobsRole.IDLE;
+						}
+					}
+					
+					
+					if (mState == AirmobsRole.CUSTOMER) {
 						if (isMessagingActivated()) {
 							Log.i(LOG_TAG, "detected messaging app activated --> starting AirmobsSmsSender");
 							Intent msgui = new Intent(MonitorService.this,AirmobsSmsSender.class);
@@ -207,6 +237,8 @@ public class MonitorService extends ServiceAdapter {
 	private MonitorService.AirmobsRole mState;
 	private static final String LOG_TAG = "Airmobs::MonitorService";
 	private ArrayList<MonitorListener> mListeners;
-	private ServerLogic mServerLogic;;
+	private ServerLogic mServerLogic;
+	private WifiNetworkManager wifiManager;
+	private OperatorNetworkManager operatorNetManager;
 
 }

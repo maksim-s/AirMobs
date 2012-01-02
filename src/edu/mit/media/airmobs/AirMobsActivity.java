@@ -13,6 +13,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.AutoCompleteTextView;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class AirMobsActivity extends Activity implements ServiceBinder.BoundCallback{
 	
@@ -35,7 +38,47 @@ public class AirMobsActivity extends Activity implements ServiceBinder.BoundCall
 				AddressManager.instance().setProviderAddress(s.toString());
 			}
         });
-        // starting  service and binding
+        // checkbox handlers
+        CheckBox sms  = (CheckBox) findViewById(R.id.sms_ok);
+        CheckBox call = (CheckBox) findViewById(R.id.call_ok);
+        CheckBox inet = (CheckBox) findViewById(R.id.inet_ok);
+        sms.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				if (isChecked) {
+					smsEnabled = !smsEnabled;
+					Log.i(LOG_TAG, "Sms status: " + smsEnabled);
+				}
+				
+			}        	
+        });
+        call.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				if (isChecked) {
+					callEnabled = !callEnabled;
+					Log.i(LOG_TAG, "Call status: " + callEnabled);
+				}
+				
+			}        	
+        });
+        inet.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				if (isChecked) {
+					inetEnabled = !inetEnabled;
+					Log.i(LOG_TAG, "Internet status: " + inetEnabled);
+				}
+				
+			}        	
+        });
+       // starting  service and binding
        started = false;
        mBinder = new ServiceBinder();
        started = mBinder.isServiceStarted(MonitorService.class.getName(),this);
@@ -109,4 +152,8 @@ public class AirMobsActivity extends Activity implements ServiceBinder.BoundCall
     private ServiceBinder mBinder;
     private boolean started;
     private SampleMonitorListener mListener;
+    private boolean smsEnabled = false;
+    private boolean callEnabled = false;
+    private boolean inetEnabled = false;
+    
 }

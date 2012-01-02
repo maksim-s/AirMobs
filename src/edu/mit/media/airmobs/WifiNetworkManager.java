@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
 import android.net.wifi.*;
 
 /**
@@ -16,12 +17,22 @@ import android.net.wifi.*;
 
 public class WifiNetworkManager {
 	private boolean status;
+	private boolean isConnected;
 	private NetworkParams networkParams;
 	private WifiManager wifiManager;
 
 	public WifiNetworkManager(Context c) {
-		wifiManager = (WifiManager) c.getSystemService(Context.WIFI_SERVICE);
-		status  = wifiManager.isWifiEnabled();
+		this.wifiManager = (WifiManager) c.getSystemService(Context.WIFI_SERVICE);
+		this.status  = wifiManager.isWifiEnabled();
+		if (status) {
+			WifiInfo info = wifiManager.getConnectionInfo();
+			SupplicantState state = info.getSupplicantState();
+			if (state == SupplicantState.DORMANT || state == SupplicantState.INACTIVE) {
+				this.isConnected = false;
+			} else {
+				this.isConnected = true;
+			}
+		}
 		// fill in the network params	
 	}
 	
@@ -43,6 +54,11 @@ public class WifiNetworkManager {
 		} else {
 			return true;
 		}
+	}
+	
+	// returns true if connected to any wifi network
+	public boolean isConnected() {
+		return this.isConnected;
 	}
 	
 	// return the list of names of available wifi networks
