@@ -47,10 +47,8 @@ public class AirMobsActivity extends Activity implements ServiceBinder.BoundCall
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
 				// TODO Auto-generated method stub
-				if (isChecked) {
-					smsEnabled = !smsEnabled;
+					smsEnabled = isChecked;
 					Log.i(LOG_TAG, "Sms status: " + smsEnabled);
-				}
 				
 			}        	
         });
@@ -59,10 +57,8 @@ public class AirMobsActivity extends Activity implements ServiceBinder.BoundCall
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
 				// TODO Auto-generated method stub
-				if (isChecked) {
-					callEnabled = !callEnabled;
+					callEnabled = isChecked;
 					Log.i(LOG_TAG, "Call status: " + callEnabled);
-				}
 				
 			}        	
         });
@@ -71,10 +67,8 @@ public class AirMobsActivity extends Activity implements ServiceBinder.BoundCall
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
 				// TODO Auto-generated method stub
-				if (isChecked) {
-					inetEnabled = !inetEnabled;
+					inetEnabled = isChecked;
 					Log.i(LOG_TAG, "Internet status: " + inetEnabled);
-				}
 				
 			}        	
         });
